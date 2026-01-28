@@ -1,4 +1,7 @@
-from space_network_lib import SpaceEntity, SpaceNetwork, Packet
+from space_network_lib import *
+import time
+
+space_net = SpaceNetwork(2)
 
 
 class Satellite(SpaceEntity):
@@ -8,11 +11,20 @@ class Satellite(SpaceEntity):
     def receive_signal(self, packet: Packet):
         return f"{self.name} Received: {packet}"
 
-space_net1 = SpaceNetwork(1)
+
+def attempt_transmission(packet):
+    try:
+        space_net.send(packet)
+    except TemporalInterferenceError:
+        print("Interference, waiting ...")
+        time.sleep(2)
+        attempt_transmission(packet)
+    except DataCorruptedError:
+        print("corrupted, retrying...")
+        attempt_transmission(packet)
+
 
 sat1 = Satellite("satellite1", 100)
 sat2 = Satellite("satellite2", 200)
-new_message = Packet("i found aliens",sat1 ,sat2)
-print(space_net1.send(new_message))
-
-
+new_message = Packet("i found aliens", sat1, sat2)
+attempt_transmission(new_message)

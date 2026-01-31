@@ -1,10 +1,13 @@
 from space_network_lib import *
 import time
 
+
 class BrokenConnectionError(CommsError):
     pass
 
-space_net = SpaceNetwork(4)
+
+space_net = SpaceNetwork(5)
+
 
 def attempt_transmission(packet):
     try:
@@ -30,7 +33,6 @@ class RelayPacket(Packet):
         return f"Relaying[{self.data}]to {self.receiver} from {self.sender}"
 
 
-
 class Satellite(SpaceEntity):
     def __init__(self, name, distance_from_earth):
         super().__init__(name, distance_from_earth)
@@ -50,9 +52,6 @@ class Earth(SpaceEntity):
 
     def receive_signal(self, packet: Packet):
         print(f"{self.name} Received: {packet}")
-
-
-
 
 
 sat1 = Satellite("satellite1", 100)
